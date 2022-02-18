@@ -42,7 +42,20 @@ struct _PangoFontFaceClass
   gboolean               (* supports_language) (PangoFontFace *face,
                                                 PangoLanguage *language);
   PangoLanguage **       (* get_languages)     (PangoFontFace *face);
+  gboolean               (* has_char)          (PangoFontFace *face,
+                                                gunichar       wc);
+  const char *           (* get_faceid)        (PangoFontFace *face);
+  PangoFont *            (* create_font)       (PangoFontFace              *face,
+                                                const PangoFontDescription *desc,
+                                                float                       dpi,
+                                                const PangoMatrix          *matrix);
 };
 
 #define PANGO_FONT_FACE_CLASS(klass)      (G_TYPE_CHECK_CLASS_CAST ((klass), PANGO_TYPE_FONT_FACE, PangoFontFaceClass))
 #define PANGO_FONT_FACE_GET_CLASS(obj)    (G_TYPE_INSTANCE_GET_CLASS ((obj), PANGO_TYPE_FONT_FACE, PangoFontFaceClass))
+
+const char *    pango_font_face_get_faceid      (PangoFontFace              *face);
+PangoFont *     pango_font_face_create_font     (PangoFontFace              *face,
+                                                 const PangoFontDescription *desc,
+                                                 float                       dpi,
+                                                 const PangoMatrix          *matrix);
