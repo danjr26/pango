@@ -29,7 +29,7 @@
 
 #include "pangodwrite-fontmap.h"
 #include "pango-hbfamily-private.h"
-#include "pango-hbfontmap-private.h"
+#include "pango-fontmap-private.h"
 #include "pango-hbface-private.h"
 #include "pango-hbfont-private.h"
 #include "pango-context.h"
@@ -341,7 +341,7 @@ G_DEFINE_TYPE (PangoDirectWriteFontMap, pango_direct_write_font_map, PANGO_TYPE_
 static void
 pango_direct_write_font_map_init (PangoDirectWriteFontMap *self)
 {
-  pango_font_map_repopulate (PANGO_FONT_MAP (map), TRUE);
+  pango_font_map_repopulate (PANGO_FONT_MAP (self), TRUE);
 }
 
 static void
@@ -374,7 +374,7 @@ pango_direct_write_font_map_class_init (PangoDirectWriteFontMapClass *class_)
 PangoDirectWriteFontMap *
 pango_direct_write_font_map_new (void)
 {
-  return (PangoDirectWriteHbFontMap *)
+  return (PangoDirectWriteFontMap *)
       g_object_new (PANGO_TYPE_DIRECT_WRITE_FONT_MAP, NULL);
 }
 
