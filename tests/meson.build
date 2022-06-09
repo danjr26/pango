@@ -36,21 +36,22 @@ if cairo_dep.found()
     [ 'testattributes', [ 'testattributes.c', 'test-common.c' ] ],
     [ 'cxx-test', [ 'cxx-test.cpp' ] ],
     [ 'test-harfbuzz', [ 'test-harfbuzz.c' ] ],
-    [ 'test-break', [ 'test-break.c', 'test-common.c', 'validate-log-attrs.c' ] ],
     [ 'testmisc', [ 'testmisc.c' ] ],
   ]
 
-  tests += [
-    [ 'testserialize', [ 'testserialize.c' ] ],
-    [ 'testhbfont', [ 'testhbfont.c' ] ],
-  ]
-
+  if fontconfig_dep.found()
+    tests += [
+      [ 'testserialize', [ 'testserialize.c' ] ],
+      [ 'testhbfont', [ 'testhbfont.c' ] ],
+      [ 'test-break', [ 'test-break.c', 'test-common.c', 'validate-log-attrs.c' ] ],
+    ]
     if host_system != 'darwin'
       tests += [
         [ 'test-layout', [ 'test-layout.c', 'test-common.c' ] ],
         [ 'test-fonts', [ 'test-fonts.c', 'test-common.c' ] ],
       ]
     endif
+  endif
 
   if host_system != 'darwin'
     tests += [
