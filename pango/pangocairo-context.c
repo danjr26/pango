@@ -10,7 +10,7 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
@@ -31,7 +31,6 @@ typedef struct _PangoCairoContextInfo PangoCairoContextInfo;
 
 struct _PangoCairoContextInfo
 {
-  double dpi;
   gboolean set_options_explicit;
 
   cairo_font_options_t *set_options;
@@ -54,7 +53,7 @@ free_context_info (PangoCairoContextInfo *info)
 
 static PangoCairoContextInfo *
 get_context_info (PangoContext *context,
-		  gboolean      create)
+                  gboolean      create)
 {
   static GQuark context_info_quark; /* MT-safe */
   PangoCairoContextInfo *info;
@@ -68,7 +67,6 @@ retry:
   if (G_UNLIKELY (!info) && create)
     {
       info = g_slice_new0 (PangoCairoContextInfo);
-      info->dpi = -1.0;
 
       if (!g_object_replace_qdata (G_OBJECT (context), context_info_quark, NULL,
                                    info, (GDestroyNotify)free_context_info,
@@ -84,7 +82,7 @@ retry:
 
 static void
 _pango_cairo_update_context (cairo_t      *cr,
-			     PangoContext *context)
+                             PangoContext *context)
 {
   PangoCairoContextInfo *info;
   cairo_matrix_t cairo_matrix;
@@ -117,7 +115,7 @@ _pango_cairo_update_context (cairo_t      *cr,
   if (old_merged_options)
     {
       if (!cairo_font_options_equal (merged_options, old_merged_options))
-	changed = TRUE;
+        changed = TRUE;
       cairo_font_options_destroy (old_merged_options);
       old_merged_options = NULL;
     }
@@ -162,55 +160,12 @@ _pango_cairo_update_context (cairo_t      *cr,
  */
 void
 pango_cairo_update_context (cairo_t      *cr,
-			    PangoContext *context)
+                            PangoContext *context)
 {
   g_return_if_fail (cr != NULL);
   g_return_if_fail (PANGO_IS_CONTEXT (context));
 
   _pango_cairo_update_context (cr, context);
-}
-
-/**
- * pango_cairo_context_set_resolution:
- * @context: a `PangoContext`, from a pangocairo font map
- * @dpi: the resolution in "dots per inch". (Physical inches aren't actually
- *   involved; the terminology is conventional.) A 0 or negative value
- *   means to use the resolution from the font map.
- *
- * Sets the resolution for the context.
- *
- * This is a scale factor between points specified in a `PangoFontDescription`
- * and Cairo units. The default value is 96, meaning that a 10 point font will
- * be 13 units high. (10 * 96. / 72. = 13.3).
- */
-void
-pango_cairo_context_set_resolution (PangoContext *context,
-				    double        dpi)
-{
-  PangoCairoContextInfo *info = get_context_info (context, TRUE);
-  info->dpi = dpi;
-}
-
-/**
- * pango_cairo_context_get_resolution:
- * @context: a `PangoContext`, from a pangocairo font map
- *
- * Gets the resolution for the context.
- *
- * See [func@PangoCairo.context_set_resolution]
- *
- * Return value: the resolution in "dots per inch". A negative value will
- *   be returned if no resolution has previously been set.
- */
-double
-pango_cairo_context_get_resolution (PangoContext *context)
-{
-  PangoCairoContextInfo *info = get_context_info (context, FALSE);
-
-  if (info)
-    return info->dpi;
-  else
-    return -1.0;
 }
 
 /**
@@ -226,7 +181,7 @@ pango_cairo_context_get_resolution (PangoContext *context)
  */
 void
 pango_cairo_context_set_font_options (PangoContext               *context,
-				      const cairo_font_options_t *options)
+                                      const cairo_font_options_t *options)
 {
   PangoCairoContextInfo *info;
 
@@ -237,8 +192,7 @@ pango_cairo_context_set_font_options (PangoContext               *context,
   if (!info->set_options && !options)
     return;
 
-  if (info->set_options &&
-      options &&
+  if (info->set_options && options &&
       cairo_font_options_equal (info->set_options, options))
     return;
 
@@ -316,9 +270,9 @@ _pango_cairo_context_get_merged_font_options (PangoContext *context)
       info->merged_options = cairo_font_options_create ();
 
       if (info->surface_options)
-	cairo_font_options_merge (info->merged_options, info->surface_options);
+        cairo_font_options_merge (info->merged_options, info->surface_options);
       if (info->set_options)
-	cairo_font_options_merge (info->merged_options, info->set_options);
+        cairo_font_options_merge (info->merged_options, info->set_options);
     }
 
   return info->merged_options;
@@ -354,40 +308,6 @@ pango_cairo_create_context (cairo_t *cr)
   pango_cairo_update_context (cr, context);
 
   return context;
-}
-
-/**
- * pango_cairo_create_layout:
- * @cr: a Cairo context
- *
- * Creates a layout object set up to match the current transformation
- * and target surface of the Cairo context.
- *
- * This layout can then be used for text measurement with functions
- * like [method@Pango.Lines.get_size] or drawing with functions like
- * [func@show_layout]. If you change the transformation or target
- * surface for @cr, you need to call [func@update_layout].
- *
- * This function is the most convenient way to use Cairo with Pango,
- * however it is slightly inefficient since it creates a separate
- * `PangoContext` object for each layout. This might matter in an
- * application that was laying out large amounts of text.
- *
- * Return value: (transfer full): the newly created `PangoLayout`
- */
-PangoLayout *
-pango_cairo_create_layout (cairo_t *cr)
-{
-  PangoContext *context;
-  PangoLayout *layout;
-
-  g_return_val_if_fail (cr != NULL, NULL);
-
-  context = pango_cairo_create_context (cr);
-  layout = pango_layout_new (context);
-  g_object_unref (context);
-
-  return layout;
 }
 
 /**
