@@ -20,6 +20,7 @@
 
 #include "config.h"
 #include <math.h>
+#include <stdlib.h>
 
 #include <gio/gio.h>
 
@@ -41,7 +42,7 @@
 #endif
 
 #ifdef HAVE_DIRECT_WRITE
-#include "pangodwrite-hbfontmap.h"
+#include "pangodwrite-fontmap.h"
 #endif
 
 #ifdef HAVE_FONTCONFIG
