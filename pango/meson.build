@@ -145,11 +145,11 @@ endif
 
 if host_system == 'windows'
   pango_headers += [
-    'pangodwrite-hbfontmap.h',
+    'pangodwrite-fontmap.h',
   ]
 
   pango_sources += [
-    'pangodwrite-hbfontmap.cpp',
+    'pangodwrite-fontmap.cpp',
   ]
 
   pango_deps += [
