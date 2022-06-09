@@ -25,7 +25,6 @@
 #include <string.h>
 
 #include <pango/pangocairo.h>
-#include <pango/pangofc-fontmap.h>
 
 static PangoFontMap *fontmap;
 
@@ -307,7 +306,7 @@ main (int argc, char **argv)
 
   filename = argv[1];
 
-  fontmap = PANGO_FONT_MAP (pango_fc_font_map_new ());
+  fontmap = PANGO_FONT_MAP (pango_font_map_new_default ());
   setup_fontmap (PANGO_FONT_MAP (fontmap));
 
   surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 0, 0);
