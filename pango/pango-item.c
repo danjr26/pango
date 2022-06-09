@@ -463,3 +463,75 @@ pango_item_get_properties (PangoItem      *item,
       tmp_list = tmp_list->next;
     }
 }
+
+PangoFont *
+pango_analysis_get_font (const PangoAnalysis *analysis)
+{
+  return analysis->font;
+}
+
+int
+pango_analysis_get_bidi_level (const PangoAnalysis *analysis)
+{
+  return analysis->level;
+}
+
+PangoGravity
+pango_analysis_get_gravity (const PangoAnalysis *analysis)
+{
+  return (PangoGravity) analysis->gravity;
+}
+
+guint
+pango_analysis_get_flags (const PangoAnalysis *analysis)
+{
+  return analysis->flags;
+}
+
+GUnicodeScript
+pango_analysis_get_script (const PangoAnalysis *analysis)
+{
+  return (GUnicodeScript) analysis->script;
+}
+
+PangoLanguage *
+pango_analysis_get_language (const PangoAnalysis *analysis)
+{
+  return analysis->language;
+}
+
+GSList *
+pango_analysis_get_extra_attributes (const PangoAnalysis *analysis)
+{
+  return analysis->extra_attrs;
+}
+
+const PangoAnalysis *
+pango_item_get_analysis (PangoItem *item)
+{
+  return &item->analysis;
+}
+
+int
+pango_item_get_byte_offset (PangoItem *item)
+{
+  return item->offset;
+}
+
+int
+pango_item_get_byte_length (PangoItem *item)
+{
+  return item->length;
+}
+
+int
+pango_item_get_char_offset (PangoItem *item)
+{
+  return item->char_offset;
+}
+
+int
+pango_item_get_char_length (PangoItem *item)
+{
+  return item->num_chars;
+}
