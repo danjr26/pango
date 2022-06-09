@@ -281,9 +281,9 @@ harfbuzz_dep = dependency('harfbuzz',
 
 pango_deps += harfbuzz_dep
 
-if host_system == 'linux'
-  fontconfig_dep = dependency('fontconfig', version: fontconfig_req_version, required: true)
+fontconfig_dep = dependency('fontconfig', version: fontconfig_req_version, required: host_system == 'linux')
 
+if fontconfig_dep.found()
   pango_deps += fontconfig_dep
   pango_conf.set('HAVE_FONTCONFIG', 1)
 endif
