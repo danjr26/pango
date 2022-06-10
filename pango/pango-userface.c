@@ -309,7 +309,7 @@ pango_user_face_class_init (PangoUserFaceClass *class)
  * @extents: (out caller-allocates): return location for font extents
  * user_data: user data that was pased to [ctor@Pango.UserFace.new]
  *
- * The type of the function that is called to obtain font extents for user fonts.
+ * Type of a function that is called to obtain font extents for user fonts.
  *
  *  Returns: `TRUE` on success
  */
@@ -321,7 +321,7 @@ pango_user_face_class_init (PangoUserFaceClass *class)
  * @glyph: (out caller-allocates): return location for the glyph that
  * user_data: user data that was pased to [ctor@Pango.UserFace.new]
  *
- * The type of the function that is called to determine if a user
+ * Type of a function that is called to determine if a user
  * font can render a character, and what glyph it will use.
  *
  *  Returns: `TRUE` on success
@@ -339,7 +339,7 @@ pango_user_face_class_init (PangoUserFaceClass *class)
  *   whether @glyph has color
  * user_data: user data that was pased to [ctor@Pango.UserFace.new]
  *
- * The type of the function that is called to query information about
+ * Type of a function that is called to query information about
  * a glyph in a user font.
  *
  * Returns: `TRUE` on success
@@ -356,7 +356,7 @@ pango_user_face_class_init (PangoUserFaceClass *class)
  * @flags: `PangoShapeFlags` to use
  * user_data: user data that was pased to [ctor@Pango.UserFace.new]
  *
- * The type of the function that is used to shape a segment of text
+ * Type of a function that is used to shape a segment of text
  * with a user font.
  *
  * This callback is optional when creating a user font. If it isn't
@@ -370,7 +370,7 @@ pango_user_face_class_init (PangoUserFaceClass *class)
  * that turn the text-to-glyph mapping into an m-n relationship. The
  * function is responsible for filling not just the glyphs and their
  * positions, but also cluster information and glyph attributes in
- * [struct@Pango.VisAttr].
+ * [struct@Pango.GlyphVisAttr].
  *
  * Returns: `TRUE` on success
  */
@@ -384,7 +384,7 @@ pango_user_face_class_init (PangoUserFaceClass *class)
  * @backend_id: a string identifying the [class@Pango.Renderer] in use
  * @backend_data: backend-specific data
  *
- * The type of the function that is called to render a glyph with a
+ * Type of a function that is called to render a glyph with a
  * user font.
  *
  * This callback is optional when creating a user font. IF it isn't

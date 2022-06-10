@@ -664,7 +664,7 @@ pango_hb_face_new_from_file (const char                 *file,
  *
  * Here, 'synthetic' means that the variant is implemented by rendering
  * the glyphs differently, not by using data from the original @face.
- * See [ctor@Pango.HbFace.new_instance] for that.
+ * See [method@Pango.HbFace.new_instance] for that.
  *
  * @transform can be used to specify a non-trivial font matrix for creating
  * synthetic italics or synthetic condensed variants of an existing face.
@@ -680,11 +680,12 @@ pango_hb_face_new_from_file (const char                 *file,
  * be used to create generic aliases such as 'sans' or 'monospace'.
  *
  * Note that only the following fields in @description should be set:
- * - style or stretch, to indicate a transformed style
- * - weight, to indicate a bolder weight
- * - family, to provide an alternative family name
  *
- * [method@Pango.Face.is_synthesized] will return `TRUE` for objects
+ * + style or stretch, to indicate a transformed style
+ * + weight, to indicate a bolder weight
+ * + family, to provide an alternative family name
+ *
+ * [method@Pango.FontFace.is_synthesized] will return `TRUE` for objects
  * created by this function.
  *
  * Returns: (transfer full): a newly created `PangoHbFace`
