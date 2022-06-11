@@ -133,18 +133,9 @@ pango_hb_family_finalize (GObject *object)
 {
   PangoHbFamily *self = PANGO_HB_FAMILY (object);
 
-  g_free (self->name);
   g_ptr_array_unref (self->faces);
 
   G_OBJECT_CLASS (pango_hb_family_parent_class)->finalize (object);
-}
-
-static const char *
-pango_hb_family_get_name (PangoFontFamily *family)
-{
-  PangoHbFamily *self = PANGO_HB_FAMILY (family);
-
-  return self->name;
 }
 
 static PangoFontFace *
@@ -172,7 +163,6 @@ pango_hb_family_class_init (PangoHbFamilyClass *class)
 
   object_class->finalize = pango_hb_family_finalize;
 
-  family_class->get_name = pango_hb_family_get_name;
   family_class->get_face = pango_hb_family_get_face;
 }
 
@@ -194,7 +184,7 @@ pango_hb_family_new (const char *name)
 
   self = g_object_new (PANGO_TYPE_HB_FAMILY, NULL);
 
-  self->name = g_strdup (name);
+  pango_font_family_set_name (PANGO_FONT_FAMILY (self), name);
 
   return self;
 }

@@ -887,24 +887,23 @@ pango_font_map_add_family (PangoFontMap    *self,
 
   g_return_if_fail (PANGO_IS_FONT_MAP (self));
   g_return_if_fail (PANGO_IS_HB_FAMILY (family) || PANGO_IS_GENERIC_FAMILY (family));
-  g_return_if_fail (((CommonFamily *)family)->map == NULL);
+  g_return_if_fail (family->map == NULL);
 
   if (!self->in_populate)
     g_ptr_array_add (self->added_families, g_object_ref (family));
 
-  name = ((CommonFamily *)family)->name;
+  name = family->name;
 
   position = 0;
   while (position < self->families->len)
     {
       PangoFontFamily *f = g_ptr_array_index (self->families, position);
-      if (g_ascii_strcasecmp (name, ((CommonFamily *)f)->name) < 0)
+      if (g_ascii_strcasecmp (name, f->name) < 0)
         break;
       position++;
     }
 
-  ((CommonFamily *)family)->map = self;
-  g_object_add_weak_pointer (G_OBJECT (self), (gpointer *)&((CommonFamily *)family)->map);
+  pango_font_family_set_font_map (family, self);
 
   g_ptr_array_insert (self->families, position, family);
   g_hash_table_add (self->families_hash, family);
@@ -930,7 +929,7 @@ pango_font_map_remove_family (PangoFontMap    *self,
 
   g_return_if_fail (PANGO_IS_FONT_MAP (self));
   g_return_if_fail (PANGO_IS_HB_FAMILY (family) || PANGO_IS_GENERIC_FAMILY (family));
-  g_return_if_fail (((CommonFamily *)family)->map == self);
+  g_return_if_fail (family->map == self);
 
   if (!g_ptr_array_find (self->added_families, family, &position))
     return;
@@ -938,8 +937,7 @@ pango_font_map_remove_family (PangoFontMap    *self,
   g_hash_table_remove (self->families_hash, family);
   g_ptr_array_remove_index (self->families, position);
 
-  g_object_remove_weak_pointer (G_OBJECT (self), (gpointer *)&((CommonFamily *)family)->map);
-  ((CommonFamily *)family)->map = NULL;
+  pango_font_family_set_font_map (family, NULL);
 
   if (!self->in_populate)
     g_list_model_items_changed (G_LIST_MODEL (self), position, 1, 0);
