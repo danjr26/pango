@@ -579,13 +579,19 @@ pango_fc_font_map_set_config (PangoFcFontMap *self,
 {
   g_return_if_fail (PANGO_IS_FC_FONT_MAP (self));
 
-  if (self->config)
-    FcConfigDestroy (self->config);
+  if (self->config == config && FcConfigUptoDate (config))
+    return;
 
-  self->config = config;
+  if (self->config != config)
+    {
+      if (self->config)
+        FcConfigDestroy (self->config);
 
-  if (self->config)
-    FcConfigReference (self->config);
+      self->config = config;
+
+      if (self->config)
+        FcConfigReference (self->config);
+    }
 
   pango_font_map_repopulate (PANGO_FONT_MAP (self), TRUE);
 }
