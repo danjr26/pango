@@ -350,6 +350,13 @@ synthesize_bold_and_italic_faces (PangoFontMap *map)
 /* }}} */
 /* {{{ PangoFontMap implementation */
 
+enum {
+  PROP_RESOLUTION = 1,
+  N_PROPERTIES
+};
+
+static GParamSpec *properties[N_PROPERTIES] = { NULL };
+
 G_DEFINE_TYPE_WITH_CODE (PangoFontMap, pango_font_map, G_TYPE_OBJECT,
                          G_IMPLEMENT_INTERFACE (G_TYPE_LIST_MODEL, pango_font_map_list_model_init))
 
@@ -384,6 +391,45 @@ pango_font_map_finalize (GObject *object)
   g_hash_table_unref (self->fontsets);
 
   G_OBJECT_CLASS (pango_font_map_parent_class)->finalize (object);
+}
+
+static void
+pango_font_map_set_property (GObject      *object,
+                             guint         property_id,
+                             const GValue *value,
+                             GParamSpec   *pspec)
+{
+  PangoFontMap *map = PANGO_FONT_MAP (object);
+
+  switch (property_id)
+    {
+    case PROP_RESOLUTION:
+      pango_font_map_set_resolution (map, g_value_get_float (value));
+      break;
+
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+    }
+}
+
+/* Load a font from the first matching family */
+static void
+pango_font_map_get_property (GObject    *object,
+                             guint       property_id,
+                             GValue     *value,
+                             GParamSpec *pspec)
+{
+  PangoFontMap *map = PANGO_FONT_MAP (object);
+
+  switch (property_id)
+    {
+    case PROP_RESOLUTION:
+      g_value_set_float (value, map->dpi);
+      break;
+
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+    }
 }
 
 /* Load a font from the first matching family */
@@ -553,6 +599,8 @@ pango_font_map_class_init (PangoFontMapClass *class)
   GObjectClass *object_class = G_OBJECT_CLASS (class);
 
   object_class->finalize = pango_font_map_finalize;
+  object_class->set_property = pango_font_map_set_property;
+  object_class->get_property = pango_font_map_get_property;
 
   class->load_font = pango_font_map_default_load_font;
   class->load_fontset = pango_font_map_default_load_fontset;
@@ -560,6 +608,12 @@ pango_font_map_class_init (PangoFontMapClass *class)
   class->changed = pango_font_map_default_changed;
   class->get_family = pango_font_map_default_get_family;
   class->populate = pango_font_map_default_populate;
+
+  properties[PROP_RESOLUTION] =
+      g_param_spec_float ("resolution", NULL, NULL, 0, G_MAXFLOAT, 96.0,
+                          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+  g_object_class_install_properties (object_class, N_PROPERTIES, properties);
 }
 
 /* }}} */
@@ -970,15 +1024,38 @@ pango_font_map_remove_family (PangoFontMap    *self,
  */
 void
 pango_font_map_set_resolution (PangoFontMap *self,
-                               double        dpi)
+                               float         dpi)
 {
   g_return_if_fail (PANGO_IS_FONT_MAP (self));
   g_return_if_fail (dpi > 0);
+
+  if (self->dpi == dpi)
+    return;
 
   self->dpi = dpi;
 
   clear_caches (self);
   pango_font_map_changed (self);
+
+  g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_RESOLUTION]);
+}
+
+/**
+ * pango_font_map_get_resolution:
+ * @self: a `PangoFontMap`
+ *
+ * Returns the resolution for the fontmap.
+ *
+ * See [method@Pango.FontMap.set_resolution].
+ *
+ * Return value: the resolution for the fontmap
+ */
+float
+pango_font_map_get_resolution (PangoFontMap *self)
+{
+  g_return_val_if_fail (PANGO_IS_FONT_MAP (self), 0);
+
+  return self->dpi;
 }
 
 /* }}} */
