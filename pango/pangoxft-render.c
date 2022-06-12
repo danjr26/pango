@@ -625,7 +625,10 @@ pango_xft_renderer_real_composite_trapezoids (PangoXftRenderer *xftrenderer,
       xft_color.color.red = color->red;
       xft_color.color.green = color->green;
       xft_color.color.blue = color->blue;
-      xft_color.color.alpha = xftrenderer->priv->alpha;
+      xft_color.color.alpha =
+        pango_renderer_get_alpha (PANGO_RENDERER (xftrenderer), part);
+      if(!xft_color.color.alpha)
+        xft_color.color.alpha = xftrenderer->priv->alpha;
 
       src_picture = XftDrawSrcPicture (xftrenderer->draw, &xft_color);
       dest_picture = XftDrawPicture (xftrenderer->draw);
@@ -664,7 +667,10 @@ pango_xft_renderer_real_composite_glyphs (PangoXftRenderer *xftrenderer,
       xft_color.color.red = color->red;
       xft_color.color.green = color->green;
       xft_color.color.blue = color->blue;
-      xft_color.color.alpha = xftrenderer->priv->alpha;
+      xft_color.color.alpha =
+        pango_renderer_get_alpha(PANGO_RENDERER (xftrenderer), PANGO_RENDER_PART_FOREGROUND);
+      if(!xft_color.color.alpha)
+        xft_color.color.alpha = xftrenderer->priv->alpha;
 
       XftDrawGlyphSpec (xftrenderer->draw, &xft_color,
 			xft_font,
